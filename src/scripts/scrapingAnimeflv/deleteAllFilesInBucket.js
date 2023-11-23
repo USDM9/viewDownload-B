@@ -1,12 +1,10 @@
-import { ObjectId } from 'mongodb'
-import dbConectAndClose from '../../config/dbMongo.js'
 import mongoose from 'mongoose'
 
 // Function to delete all files in a specific GridFS bucket
-export const deleteAllFilesInBucket = async (bucketName) => {
+export const deleteAllFilesInBucket = async (bucketName, dbConnection) => {
   console.log('// *** STARTING deleteAllFilesInBucket *** //')
   try {
-    const conn = await dbConectAndClose()
+    const conn = dbConnection
 
     conn.on('error', (err) => {
       throw new Error('Error connecting to the database:', err)
@@ -23,12 +21,8 @@ export const deleteAllFilesInBucket = async (bucketName) => {
         await gfs.delete(doc._id)
       }
       console.log('All files in the bucket deleted')
-
-      // Close the connection after deleting the files
-      dbConectAndClose('close')
     })
   } catch (error) {
-    dbConectAndClose('close')
     console.error('Error deleting files from the bucket:', error)
   }
 }

@@ -1,9 +1,8 @@
-import { ObjectId } from 'mongodb'
 import fetch from 'node-fetch'
 import { saveToMongoDB } from './saveToMongoDB.js'
 
 // Function to download the file
-export const downloadFile = async (videoData, filename) => {
+export const downloadFile = async (videoData, filename, dbConnection) => {
   console.log('// *** STARTING downloadFile *** //')
   const url = videoData.link
 
@@ -24,7 +23,7 @@ export const downloadFile = async (videoData, filename) => {
     }
 
     // Save the downloaded file to MongoDB
-    saveToMongoDB(stream, filename, data)
+    saveToMongoDB(stream, filename, data, dbConnection)
   } catch (error) {
     throw new Error(`Error downloading the file: ${error.message}`)
   }

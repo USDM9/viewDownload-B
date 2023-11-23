@@ -1,5 +1,5 @@
 import { chromium } from 'playwright'
-import dbConectAndClose from '../../config/dbMongo.js'
+
 import AnimeCap from '../../models/animeSchema.js'
 
 export const monitoringPage = async () => {
@@ -12,7 +12,7 @@ export const monitoringPage = async () => {
   const page = await browser.newPage(mainUrl)
 
   // Navigate to the target website
-  await page.goto()
+  await page.goto(mainUrl)
 
   // Extract information from the page
   const listItem = await page.locator('.fa-play-circle').allTextContents()
@@ -26,7 +26,6 @@ export const monitoringPage = async () => {
 
   // Close the Chromium browser and connect to the database
   await browser.close()
-  await dbConectAndClose()
 
   // Get information from the database
   const dbContent = await dbGetInfo(content)
@@ -58,7 +57,7 @@ const dbGetInfo = async (content) => {
     if (cursor.length > 0) {
       // Extract content data from documents
       const contents = cursor.map(doc => { return { content: doc.filename.metadata.data.content } })
-      const res = contents.map(doc => doc.content === content ? doc.content : '')
+      const res = contents.map(doc => doc.content === content ? doc.content : ' ')
       return res.toString()
     } else {
       // No documents found in the collection
@@ -67,8 +66,5 @@ const dbGetInfo = async (content) => {
     }
   } catch (error) {
     console.error('Error retrieving file information:', error)
-  } finally {
-    // Close the database connection
-    dbConectAndClose('close')
   }
 }

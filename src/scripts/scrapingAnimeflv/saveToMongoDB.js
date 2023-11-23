@@ -1,11 +1,10 @@
-import dbConectAndClose from '../../config/dbMongo.js'
 import mongoose from 'mongoose'
 
 // Function to save the file in MongoDB
-export const saveToMongoDB = async (stream, fileName, data) => {
+export const saveToMongoDB = async (stream, fileName, data, dbConnection) => {
   console.log('*** Init Function To Save File ***')
   // Connect to MongoDB when this function is called
-  const conn = await dbConectAndClose()
+  const conn = dbConnection
 
   conn.on('error', (err) => {
     console.error('Error connecting to MongoDB:', err)
@@ -33,12 +32,10 @@ export const saveToMongoDB = async (stream, fileName, data) => {
     // Event handler for when the upload stream is closed
     uploadStream.on('close', () => {
       console.log('File uploaded successfully to MongoDB')
-      dbConectAndClose('close')
     })
 
     // Event handler for any errors during the upload process
     uploadStream.on('error', (err) => {
-      dbConectAndClose('close')
       throw new Error('error uploadStream.on', err)
     })
   })

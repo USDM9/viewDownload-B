@@ -3,14 +3,14 @@ import { getUrl } from './getUrlDownloadVideo.js'
 import { downloadFile } from './downloadAndSave.js'
 import { deleteAllFilesInBucket } from './deleteAllFilesInBucket.js'
 
-export const scrapingAnimeflv = async () => {
+export const scrapingAnimeflv = async (dbConnection) => {
   try {
     // Get monitoring data
-    const dataMonitoring = await monitoringPage()
+    const dataMonitoring = await monitoringPage(dbConnection)
 
     if (dataMonitoring.isData) {
       // If data exists, delete files in the 'capOP' bucket
-      if (dataMonitoring.dbContent.length > 0) await deleteAllFilesInBucket('capOP')
+      if (dataMonitoring.dbContent.length > 0) await deleteAllFilesInBucket('capOP', dbConnection)
 
       // Extract title and content information
       const { title, content } = dataMonitoring
@@ -25,7 +25,7 @@ export const scrapingAnimeflv = async () => {
       const videoData = await getUrl(dataMonitoring)
 
       // Download the file and save it to the database
-      await downloadFile(videoData, `${nameVideo}`)
+      await downloadFile(videoData, `${nameVideo}`, dbConnection)
     } else {
       // No data changes, end the script execution
       console.log('The data has not changed, the script execution will end')
