@@ -19,6 +19,8 @@ export const setupRoutesOP = (conn) => {
       const gfs = new mongoose.mongo.GridFSBucket(conn.db, { bucketName })
       // Find all videos in the GridFSBucket and send the list as JSON
       const findCursor = await gfs.find({}).toArray()
+      console.log(findCursor)
+      console.log('PATH ==> /one-piece')
       res.json(findCursor)
     } catch (error) {
       // Handle errors
