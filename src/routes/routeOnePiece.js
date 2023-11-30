@@ -10,18 +10,20 @@ mongoose.set('strictQuery', false)
 const routeOnePiece = express.Router()
 
 // Function to set up routes for One Piece videos
-export const setupRoutesOP = (dbConnection) => {
+export const setupRoutesOP = (conn) => {
+  const bucketName = process.env.BUCKET_NAME || 'capOP'
+
   // Route to get a list of all One Piece videos
   routeOnePiece.get('/one-piece', async (req, res) => {
-    const conn = dbConnection
-    const gfs = new mongoose.mongo.GridFSBucket(conn.db, { bucketName: 'capOP' })
     try {
+      const gfs = new mongoose.mongo.GridFSBucket(conn.db, { bucketName })
       // Find all videos in the GridFSBucket and send the list as JSON
       const findCursor = await gfs.find({}).toArray()
       res.json(findCursor)
     } catch (error) {
       // Handle errors
-      throw new Error('Error in the /one-piece route with error:', error)
+      console.error('Error:', error)
+      res.status(500).json({ error: 'Internal Server Error' })
     }
   })
 
@@ -29,12 +31,16 @@ export const setupRoutesOP = (dbConnection) => {
   routeOnePiece.get('/one-piece/:videoID', async (req, res) => {
     // Extract video ID from request parameters
     const videoID = req.params.videoID
+
+    // Validate that videoID is a valid ObjectId
+    if (!ObjectId.isValid(videoID)) {
+      return res.status(400).json({ error: 'Invalid video ID' })
+    }
+
     const videoObjectId = new ObjectId(videoID)
 
     try {
-      const conn = dbConnection
-      const gfs = new mongoose.mongo.GridFSBucket(conn.db, { bucketName: 'capOP' })
-
+      const gfs = new mongoose.mongo.GridFSBucket(conn.db, { bucketName })
       // Find the video by its ID in the GridFSBucket
       const video = await gfs.find({ _id: videoObjectId }).toArray()
 
