@@ -6,6 +6,7 @@ const { mongoCapURI } = defaultConfig
 
 export const dbConnect = () => {
   try {
+    console.log('CONN DB', mongoCapURI)
     mongoose.connect(mongoCapURI, {
       useNewUrlParser: true,
       useUnifiedTopology: true

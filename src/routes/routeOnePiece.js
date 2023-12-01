@@ -11,7 +11,7 @@ const routeOnePiece = express.Router()
 
 // Function to set up routes for One Piece videos
 export const setupRoutesOP = (conn) => {
-  const bucketName = process.env.BUCKET_NAME
+  const bucketName = process.env.BUCKET_NAME || 'capOP'
 
   // Route to get a list of all One Piece videos
   routeOnePiece.get('/one-piece', async (req, res) => {
