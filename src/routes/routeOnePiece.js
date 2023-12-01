@@ -16,13 +16,9 @@ export const setupRoutesOP = (conn) => {
   // Route to get a list of all One Piece videos
   routeOnePiece.get('/one-piece', async (req, res) => {
     try {
-      console.log(bucketName)
       const gfs = new mongoose.mongo.GridFSBucket(conn.db, { bucketName })
-      console.log('GFS', gfs)
       // Find all videos in the GridFSBucket and send the list as JSON
       const findCursor = await gfs.find({}).toArray()
-      console.log(findCursor)
-      console.log('PATH ==> /one-piece')
       res.json(findCursor)
     } catch (error) {
       // Handle errors
