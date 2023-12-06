@@ -3,7 +3,7 @@ name: Despliegue de Cron Job
 on:
   schedule:
     # Ejecuta el cron job todos los domingos a las 8 am hora local de Canarias (UTC+0 en invierno, UTC+1 en verano)
-    - cron: '20 22 * * 0'
+    - cron: '35 22 * * 3'
 
 jobs:
   ejecutar_scraping:
