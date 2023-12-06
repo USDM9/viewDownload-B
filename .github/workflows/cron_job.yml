@@ -1,0 +1,32 @@
+name: Despliegue de Cron Job
+
+on:
+  schedule:
+    # Ejecuta el cron job todos los domingos a las 8 am hora local de Canarias (UTC+0 en invierno, UTC+1 en verano)
+    - cron: '0 23 * * 0'
+
+jobs:
+  ejecutar_scraping:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout del repositorio
+      uses: actions/checkout@v2
+
+    - name: Configurar Node.js
+      uses: actions/setup-node@v1
+      with:
+        node-version: '18.18.0' # Asegúrate de usar la versión de Node.js que necesitas
+
+    - name: Instalar dependencias
+      run: npm install
+
+    - name: Conectar a MongoDB
+      run: |
+        echo "DB_URI=${{ secrets.DB_URI }}" > .env
+        # Asegúrate de configurar DB_URI en los secretos de GitHub Actions
+
+    - name: Ejecutar el cron job
+      run: npm run start-cron
+      env:
+        TZ: 'Atlantic/Canary' # Establece la zona horaria para el cron job
