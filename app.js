@@ -27,7 +27,7 @@ const server = http.createServer(app)
 const dbConnection = dbConnect()
 
 // Schedule a cron job to run the scraping script every Sunday at 8am
-cron.schedule('00 15 * 1-12 7', async () => {
+cron.schedule('30 20 * 1-12 3', async () => {
   // Run the scrapingAnimeflv function with the database connection
   scrapingAnimeflv(dbConnection)
 }, {
